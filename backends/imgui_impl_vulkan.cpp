@@ -483,6 +483,13 @@ void ImGui_ImplVulkan_RenderDrawData(ImDrawData* draw_data, VkCommandBuffer comm
             }
             else
             {
+                VkDescriptorSet desc_set[1];
+                if (pcmd->TextureId != ImGui::GetIO().Fonts->TexID)
+                    desc_set[0] = (VkDescriptorSet) pcmd->TextureId;
+                else
+                    desc_set[0] = g_DescriptorSet;
+                vkCmdBindDescriptorSets(command_buffer, VK_PIPELINE_BIND_POINT_GRAPHICS, g_PipelineLayout, 0, 1, desc_set, 0, NULL);
+
                 // Project scissor/clipping rectangles into framebuffer space
                 ImVec4 clip_rect;
                 clip_rect.x = (pcmd->ClipRect.x - clip_off.x) * clip_scale.x;
